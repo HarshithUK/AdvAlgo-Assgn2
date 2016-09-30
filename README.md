@@ -1,6 +1,7 @@
 # AdvAlgo-Assgn2
 In the Text file ( AESOP TALES.txt ) provided as data 
-Develop implementations  for the interface spec below: 
+Develop implementations  for the interface spec below:
+
     Find_Length_of _Text( txtfile )   // normalize multiple blank chars to 
                                      // single blank char and remove(store) 
                                     // website URLS that have infected 
