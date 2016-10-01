@@ -55,7 +55,28 @@ int main () {
                         o = find_pattern(pat,tr,&suffix_trees);
                      }
                      break;
-            case 3 : build_cross_index();
+            case 3 : printf("\nWhich algorithm do you need?\n");
+                     printf("\n1.Rabin-Karp");
+                     printf("\n2.Knuth-Morris-Pratt");
+                     printf("\n3.Suffix Trees\n");
+                     do
+                     {
+                        printf("\nType a valid option:")
+                        scanf("%d",&c);
+                     }
+                     while(c!=1 && c!=2 && c!=3);
+                     if(c==1)
+                     {
+                        o = build_cross_index(fp,&rabin_karp);
+                     }
+                     else if(c==2)
+                     {
+                        o = build_cross_index(fp,&knuth_morris_pratt);
+                     }
+                     else
+                     {
+                        o = build_cross_index(fp,&suffix_trees);
+                     }
                      break;
             case 4 : printf("\nEnter the size of the palindrome you want: ");
                      int s;
