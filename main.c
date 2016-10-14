@@ -2,7 +2,6 @@
 #include "utils.h"
 
 int main () {
-    //find_length_of_text("hello world.text");
     int ch;
     char fname[10];
     FILE* fp;
@@ -11,6 +10,7 @@ int main () {
     fp = fopen(fname,"r");
     do
     {
+        int tr[2];
         printf("\n1.Find the length of the text in the file.");
         printf("\n2.Find the pattern in a given text range.");
         printf("\n3.Build a cross index from the given file.");
@@ -28,8 +28,7 @@ int main () {
                      char pat[15];
                      scanf("%s",pat);
                      printf("\nEnter a text range: ");
-                     int tr[2];
-                     scanf("%d%d",&t[0],&t[1]);
+                     scanf("%d%d",&tr[0],&tr[1]);
                      int c=0;
                      printf("\nWhich algorithm do you need?\n");
                      printf("\n1.Rabin-Karp");
@@ -37,23 +36,19 @@ int main () {
                      printf("\n3.Suffix Trees\n");
                      do
                      {
-                        printf("\nType a valid option:")
+                        printf("\nType a valid option:");
                         scanf("%d",&c);
                      }
                      while(c!=1 && c!=2 && c!=3);
-                     int o[];
-                     if(c==1)
+                     int* o;
+                     o = find_pattern(pat,tr,c);
+                     int i;
+                     printf("\nOccurences of pattern found in indices");
+                     for(i=0; i<count; ++i)
                      {
-                        o = find_pattern(pat,tr,&rabin_karp);
+                         printf("%d ",o[i]);
                      }
-                     else if(c==2)
-                     {
-                        o = find_pattern(pat,tr,&knuth_morris_pratt);
-                     }
-                     else
-                     {
-                        o = find_pattern(pat,tr,&suffix_trees);
-                     }
+                     printf("\n");
                      break;
             case 3 : printf("\nWhich algorithm do you need?\n");
                      printf("\n1.Rabin-Karp");
@@ -61,30 +56,29 @@ int main () {
                      printf("\n3.Suffix Trees\n");
                      do
                      {
-                        printf("\nType a valid option:")
+                        printf("\nType a valid option:");
                         scanf("%d",&c);
                      }
                      while(c!=1 && c!=2 && c!=3);
                      if(c==1)
                      {
-                        o = build_cross_index(fp,&rabin_karp);
+                        build_cross_index(fp,&rabin_karp);
                      }
                      else if(c==2)
                      {
-                        o = build_cross_index(fp,&knuth_morris_pratt);
+                        build_cross_index(fp,&knuth_morris_pratt);
                      }
                      else
                      {
-                        o = build_cross_index(fp,&suffix_trees);
+                        build_cross_index(fp,&suffix_trees);
                      }
                      break;
             case 4 : printf("\nEnter the size of the palindrome you want: ");
                      int s;
                      scanf("%d",&s);
                      printf("\nEnter a text range: ");
-                     int tr[2];
-                     scanf("%d%d",&t[0],&t[1]);
-                     find_maximal_palindromes(s,t);
+                     scanf("%d%d",&tr[0],&tr[1]);
+                     find_maximal_palindromes(s,tr);
                      break;
             case 5 : print_stats();
                      break;
@@ -93,10 +87,11 @@ int main () {
                      scanf("%s",fname);
                      fp = fopen(fname, "r");
                      break;
+            case 7 : break;
             default : printf("\nInvalid Option!");
         }
     }
-    while(ch!=1 && ch!=2 && ch!=3 && ch!=4 && ch!=5 && ch!=6);
+    while(ch!=7);
     print_stats();
     return 0;
 }
