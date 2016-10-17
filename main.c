@@ -1,16 +1,18 @@
 #include <stdio.h>
 #include "utils.h"
 
-int main () {
+int main()
+{
     int ch;
     char fname[10];
     FILE* fp;
     printf("Enter the file name: ");
-    scanf("%s",fname);
+    scanf(" %[^\n]s",fname);
     fp = fopen(fname,"r");
     do
     {
         int tr[2];
+        printf("\n\n---MENU---\n\n");
         printf("\n1.Find the length of the text in the file.");
         printf("\n2.Find the pattern in a given text range.");
         printf("\n3.Build a cross index from the given file.");
@@ -26,7 +28,7 @@ int main () {
                      break;
             case 2 : printf("\nEnter a pattern: ");
                      char pat[15];
-                     scanf("%s",pat);
+                     scanf(" %[^\n]s",pat);
                      printf("\nEnter a text range: ");
                      scanf("%d%d",&tr[0],&tr[1]);
                      int c=0;
@@ -43,12 +45,13 @@ int main () {
                      int* o;
                      o = find_pattern(pat,tr,c);
                      int i;
-                     printf("\nOccurences of pattern found in indices");
+                     printf("\n%d Occurrences of pattern found in indices: ",count);
                      for(i=0; i<count; ++i)
                      {
                          printf("%d ",o[i]);
                      }
-                     printf("\n");
+                     printf("\nPreprocessing Time: %lf",preprocessing_time);
+                     printf("\nSearch Time: %lf",search_time);
                      break;
             case 3 : printf("\nWhich algorithm do you need?\n");
                      printf("\n1.Rabin-Karp");
@@ -60,18 +63,8 @@ int main () {
                         scanf("%d",&c);
                      }
                      while(c!=1 && c!=2 && c!=3);
-                     if(c==1)
-                     {
-                        build_cross_index(fp,&rabin_karp);
-                     }
-                     else if(c==2)
-                     {
-                        build_cross_index(fp,&knuth_morris_pratt);
-                     }
-                     else
-                     {
-                        build_cross_index(fp,&suffix_trees);
-                     }
+                     FILE* fpw = fopen("temp.txt","r");
+                     build_cross_index(fpw,c);
                      break;
             case 4 : printf("\nEnter the size of the palindrome you want: ");
                      int s;
@@ -92,6 +85,6 @@ int main () {
         }
     }
     while(ch!=7);
-    print_stats();
+    //print_stats();
     return 0;
 }
