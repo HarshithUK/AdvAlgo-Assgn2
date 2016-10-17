@@ -7,6 +7,16 @@
 #include<string.h>
 #include<regex.h>
 #include<time.h>
+
+struct suff_arr {
+        char* start;
+        int len;
+        int pos;
+}*arr;
+
+char* suff_text;
+int suff_count;
+
 typedef int* (*func_algo)(char*, char*);
 char url[20][100];
 double preprocessing_time;
@@ -75,6 +85,78 @@ int* rabin_karp(char* text, char* pat)
     search_time = time_elapsed(start, end);
     return occur;
 }
+
+int compar(const void *a, const void *b) {
+	struct suff_arr* o1 = (struct suff_arr*) a;
+	struct suff_arr* o2 = (struct suff_arr*) b;
+	char* s1 = o1->start;
+	char* s2 = o2->start;
+	return strcmp(s1,s2);
+}
+
+
+int linear_search (char* str) {
+	int i = 0;
+    int len = strlen(str);
+	for (i = 0; i < suff_count; ++i) {
+		if(strncmp (arr[i].start, str, len) == 0) {
+				printf("found at : %d\n", arr[i].pos);
+				int j = 0;
+				char* suff_text = arr[i].start;
+				for (j = 0; j < len; ++j)
+					printf("%c",suff_text[j]);
+				printf("\n");
+			}
+	}
+}
+
+void create_suff_arr() {
+    FILE *fp;
+    char ch;
+    suff_count = 0;
+    fp = fopen ("test.txt", "r");
+    while (1) {
+        ch = fgetc (fp);
+        //printf("%c", ch);
+        if (ch == EOF)
+            break;
+        suff_count++;
+    }
+    fclose(fp);
+	suff_count++;
+    suff_text = (char*) malloc((suff_count)*(sizeof(char)));
+
+    int i = 0;
+    fp = fopen ("test.txt", "r");
+    while (1) {
+        ch = fgetc (fp);
+        suff_text[i] = ch;
+        if (ch == EOF) {
+            suff_text[i] = '\0';
+            break;
+            }
+        i++;
+    }
+    fclose(fp);
+
+    arr =  (struct suff_arr*) malloc((suff_count)*(sizeof(struct suff_arr)));
+
+    for ( i = 0; i < suff_count; i++) {
+        arr[i].start = &suff_text[i];
+        arr[i].len = suff_count - i;
+        arr[i].pos = i;
+        //printf("%c\t%d\t", *arr[i].start, arr[i].len);
+    }
+
+	qsort(arr, suff_count, sizeof(struct suff_arr), compar);
+
+/*    for ( i = 0; i < suff_count; i++) {
+        printf("%c\t%d\t", *arr[i].start, arr[i].len);
+    }
+*/
+
+}
+
 int* com_pre_fun (char* p) {
     //printf("%s\n", p);
     int m = strlen(p);
@@ -117,10 +199,37 @@ int kmp_matcher(char* t, char* p) {
         }
 }
 
-int* suffix_trees(char* t, char* p)
-{
-    algo = 3;
+//finds all the palindromes of given length
+int find_palindrome (int len) {
+    int k = 0;
+    int i = 0;//compares from begenning
+    int j = 0;//compares form the end
+
+    char flag = 0;
+
+    for ( k = 0; k < count; k++) {
+        i = k;
+        j = k + len - 1;
+        flag = 1;
+        for ( ; (i-k) < (len/2); i++, j--) {
+            //printf("*");
+            if(suff_text[i] != suff_text[j]) {
+                flag = 0;
+                break;
+            }
+        }
+
+        if(flag == 1) {
+            printf("%d  ", k);
+            for (i = k; i < (k+len); i++) {
+                printf("%c", suff_text[i]);
+            }
+            printf("\n");
+        }
+    }
+    return 0;
 }
+
 int find_length_of_text(FILE* fp)
 {
     char text[100];
