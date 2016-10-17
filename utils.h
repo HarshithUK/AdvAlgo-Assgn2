@@ -31,6 +31,26 @@ double time_elapsed(struct timespec start, struct timespec end)
 	t += (end.tv_nsec - start.tv_nsec) * 0.000001;
 	return t;
 }
+int first_occurence(char* pat)
+{
+    FILE* fp = fopen("temp.txt","r");
+    int ch = fgetc(fp);
+    int index=0;
+    int k = 0;
+    while(ch!=-1)
+    {
+        if(ch==pat[k])
+        {
+            ++k;
+            if(k==strlen(pat))
+                return index-k;
+        }
+        else
+            k = 0;
+        ch = fgetc(fp);
+        index++;
+    }
+}
 int* rabin_karp(char* text, char* pat)
 {
     struct timespec start, end;
