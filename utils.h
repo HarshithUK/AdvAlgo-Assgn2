@@ -75,10 +75,48 @@ int* rabin_karp(char* text, char* pat)
     search_time = time_elapsed(start, end);
     return occur;
 }
-int* knuth_morris_pratt(char* t, char* p)
-{
-    algo = 2;
+int* com_pre_fun (char* p) {
+    //printf("%s\n", p);
+    int m = strlen(p);
+    int i = 0;
+    int *pi = malloc((sizeof(int)*m));
+    for ( i = 0; i < m; i++) {
+        pi[i] = 0;
+    }
+    pi[0] = 0;
+    int k = 0;
+    int q = 0;
+
+    for (q = 1; q < m; q++) {
+        while (k > 0 && p[k] != p[q]){
+            k = pi[k-1];
+        }
+        if (p[k] == p[q])
+        k += 1;
+        pi[q] = k;
+    }
+    return pi;
 }
+
+int kmp_matcher(char* t, char* p) {
+        int n = strlen(t);
+        int m = strlen(p);
+        int* pi = com_pre_fun(p);
+        int q = 0;
+        int i = 0;
+        for ( i = 0; i < n; i++) {
+            while (q > 0 && p[q] != t[i]) {
+                q = pi[q-1];
+            }
+            if (p[q] == t[i])
+            q += 1;
+            if(q == m) {
+                printf("match found at %d\n",(i-m+1));
+                q = pi[q-1];
+            }
+        }
+}
+
 int* suffix_trees(char* t, char* p)
 {
     algo = 3;
