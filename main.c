@@ -29,7 +29,6 @@ int main()
             case 2 : printf("\nEnter a pattern: ");
                      char pat[15];
                      scanf(" %[^\n]s",pat);
-                     int c=0;
                      printf("\nHow do you want to input your text range?\n");
                      printf("\n1.By two indices");
                      printf("\n2.By two distinct patterns");

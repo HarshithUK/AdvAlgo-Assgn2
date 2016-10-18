@@ -53,7 +53,7 @@ int first_occurence(char* pat)
     }
 }
 
-int* rabin_karp(char* text, char* pat)
+int rabin_karp(char* text, char* pat)
 {
     struct timespec start, end;
     algo = 1;
