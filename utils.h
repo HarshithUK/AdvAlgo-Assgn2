@@ -118,23 +118,33 @@ int compar(const void *a, const void *b) {
 int linear_search (char* str) {
 	int i = 0;
     int len = strlen(str);
+    int occ = 0;
+    struct timespec start, end;
+    clock_gettime(CLOCK_REALTIME, &start);
 	for (i = 0; i < suff_count; ++i) {
 		if(strncmp (arr[i].start, str, len) == 0) {
 				printf("found at : %d\n", arr[i].pos);
 				int j = 0;
 				char* suff_text = arr[i].start;
-				for (j = 0; j < len; ++j)
-					printf("%c",suff_text[j]);
-				printf("\n");
+				for (j = 0; j < len; ++j) {
+                    //printf("%c",suff_text[j]);
+                    occ++;
+                }
+				//printf("\n");
 			}
 	}
+    clock_gettime(CLOCK_REALTIME, &end);
+    search_time = time_elapsed(start, end);
+    return occ;
 }
 
 void create_suff_arr() {
     FILE *fp;
     char ch;
     suff_count = 0;
-    fp = fopen ("test.txt", "r");
+    struct timespec start, end;
+    clock_gettime(CLOCK_REALTIME, &start);
+    fp = fopen ("file.txt", "r");
     while (1) {
         ch = fgetc (fp);
         //printf("%c", ch);
@@ -175,6 +185,8 @@ void create_suff_arr() {
     }
 */
 
+    clock_gettime(CLOCK_REALTIME, &end);
+    preprocessing_time = time_elapsed(start, end);
 }
 
 int* com_pre_fun (char* p) {
@@ -203,9 +215,16 @@ int* com_pre_fun (char* p) {
 int kmp_matcher(char* t, char* p) {
         int n = strlen(t);
         int m = strlen(p);
+        struct timespec start, end;
+        clock_gettime(CLOCK_REALTIME, &start);
         int* pi = com_pre_fun(p);
+        clock_gettime(CLOCK_REALTIME, &end);
+        preprocessing_time = time_elapsed(start, end);
+
+        clock_gettime(CLOCK_REALTIME, &start);
         int q = 0;
         int i = 0;
+        int occ = 0;
         for ( i = 0; i < n; i++) {
             while (q > 0 && p[q] != t[i]) {
                 q = pi[q-1];
@@ -213,10 +232,14 @@ int kmp_matcher(char* t, char* p) {
             if (p[q] == t[i])
             q += 1;
             if(q == m) {
-                printf("match found at %d\n",(i-m+1));
+                //printf("match found at %d\n",(i-m+1));
+                occ++;
                 q = pi[q-1];
             }
         }
+        clock_gettime(CLOCK_REALTIME, &end);
+        search_time = time_elapsed(start, end);        
+        return occ;
 }
 
 //finds all the palindromes of given length
@@ -314,13 +337,15 @@ int* find_pattern(char* p, int t[], int option)
         c++;
         ch = fgetc(fpw);
     }
-    int *o;
+    int o;
     if(option==1)
         o = rabin_karp(p,text);
     else if(option==2)
-        o = knuth_morris_pratt(p,text);
-    else
-        o = suffix_trees(p,text);
+        o = kmp_matcher(text,p);
+    else {
+        create_suff_arr();
+        o = linear_search(p);
+    }
     return o;
 }
 void build_cross_index(FILE* fp, int option)
