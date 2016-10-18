@@ -31,7 +31,29 @@ double time_elapsed(struct timespec start, struct timespec end)
 	t += (end.tv_nsec - start.tv_nsec) * 0.000001;
 	return t;
 }
-int rabin_karp(char* text, char* pat)
+
+int first_occurence(char* pat)
+{
+    FILE* fp = fopen("temp.txt","r");
+    int ch = fgetc(fp);
+    int index=0;
+    int k = 0;
+    while(ch!=-1)
+    {
+        if(ch==pat[k])
+        {
+            ++k;
+            if(k==strlen(pat))
+                return index-k;
+        }
+        else
+            k = 0;
+        ch = fgetc(fp);
+        index++;
+    }
+}
+
+int* rabin_karp(char* text, char* pat)
 {
     struct timespec start, end;
     algo = 1;
@@ -335,6 +357,215 @@ int find_pattern(char* p, int t[], int option)
 }
 void build_cross_index(FILE* fp, int option)
 {
+    /*int ch = fgetc(fp);
+    int c = 0,n = 0,st = 0;
+    char **d;
+    int *o;
+    int index=0;
+    char** story_titles;
+    int nl=0,k;
+    char text[100];
+    int t[2] = {0,text_size};
+    printf("\nCross-Index:\n");
+    printf("\nWords:\n");
+    while(ch!=-1)
+    {
+        if(ch==' ' || ch=='\n' || ch=='\t' || ch=='\r')
+        {
+            if(c!=0)
+            {
+                text[c] = 0;
+                //printf("%s",text);
+                int i;
+                for(i=0; i<n; ++i)
+                {
+                    if(strcmp(text,d[i])==0)
+                        break;
+                }
+                if(i==n)
+                {
+                    if(n==0)
+                        d = (char**)malloc(sizeof(char*));
+                    else
+                        d = (char**)realloc(d,(n+1)*sizeof(char*));
+                    d[n] = (char*)malloc((strlen(text))*sizeof(char));
+                    strcpy(d[n],text);
+                    t[0] = k;
+                    //printf("%d %d %s",t[0],t[1],d[n]);
+                    o = find_pattern(d[n],t,option);
+                    //printf("%s",d[n]);
+                    //printf("\n(%d).%s(%d):",n+1,d[n],count);
+                    n++;
+                    /*int j;
+                    for(j=0; j<count; ++j)
+                        printf(" %d",o[j]);
+                }
+            }
+            else
+            {
+                if(ch=='\n')
+                    nl++;
+                if(nl==3)
+                {
+                    if(st==0)
+                        story_titles = (char**)malloc(sizeof(char*));
+                    else
+                        story_titles = (char**)realloc(story_titles,(st+1)*sizeof(char*));
+                    story_titles[st] = (char*)malloc(100*sizeof(char));
+                    int j = 0;
+                    ch = fgetc(fp);
+                    while(ch!='\r')
+                    {
+                        story_titles[st][j++] = ch;
+                        ch = fgetc(fp);
+                    }
+                    story_titles[st][j] = '\0';
+                    st++;
+                    nl = 0;
+                }
+            }
+            c = 0;
+        }
+        else
+        {
+            if(c==0)
+                k = index;
+            text[c++] = ch;
+            /*if((ch>=65 && ch<=90) || (ch>=97 && ch<=122))
+            {
+                if(ch>=65 && ch<=90)
+                    ch += 32;
+            }
+            nl = 0;
+        }
+        ch = fgetc(fp);
+        index++;
+        //printf("%d %d\n",n,ch);
+        if(n==10 && ch==32)
+            n = 10;
+    }
+    printf("\n\nStory Titles:\n");
+    int i;
+    for(i=0; i<st; ++i)
+        printf("(%d).%s\n",i+1,story_titles[i]);*/
+    int n = 0,nl = 0,st = 0;
+    char** d;
+    char** story_titles;
+    int* v;
+    int ch = fgetc(fp);
+    char text[100];
+    int c=0, index=0, k;
+    while(ch != -1)
+    {
+        if(ch==' ' || ch=='\n' || ch=='\t' || ch=='\r')
+        {
+            if(c!=0)
+            {
+                text[c] = 0;
+                int i;
+                for(i=0; i<n; ++i)
+                {
+                    if(strcmp(text,d[i])==0)
+                        break;
+                }
+                if(i==n)
+                {
+                    if(n==0)
+                    {
+                        d = (char**)malloc(sizeof(char*));
+                        v = (int*)malloc(sizeof(int));
+                    }
+                    else
+                    {
+                        d = (char**)realloc(d,(n+1)*sizeof(char*));
+                        v = (int*)realloc(v,(n+1)*sizeof(int));
+                    }
+                    d[n] = (char*)malloc((strlen(text)+1)*sizeof(char));
+                    v[n] = 1;
+                    strcpy(d[n],text);
+                    n++;
+                }
+                else
+                    v[i]++;
+                c = 0;
+            }
+            else
+            {
+                if(ch=='\n')
+                    nl++;
+                if(nl==3)
+                {
+                    if(st==0)
+                        story_titles = (char**)malloc(sizeof(char*));
+                    else
+                        story_titles = (char**)realloc(story_titles,(st+1)*sizeof(char*));
+                    story_titles[st] = (char*)malloc(100*sizeof(char));
+                    int j = 0;
+                    ch = fgetc(fp);
+                    while(ch!='\r')
+                    {
+                        story_titles[st][j++] = ch;
+                        ch = fgetc(fp);
+                    }
+                    story_titles[st][j] = '\0';
+                    st++;
+                    nl = 0;
+                }
+            }
+        }
+        else
+        {
+            if(c==0)
+                k = index;
+            if((ch>=65 && ch<=90) || (ch>=97 && ch<=122))
+            {
+                if(ch>=65 && ch<=90)
+                    ch += 32;
+                text[c++] = ch;
+            }
+            nl = 0;
+        }
+        ch = fgetc(fp);
+        index++;
+    }
+    if(c>0)
+    {
+        text[count] = 0;
+        int i;
+        for(i=0; i<n; ++i)
+        {
+            if(strcmp(text,d[i])==0)
+                break;
+        }
+        if(i==n)
+        {
+            if(n==0)
+            {
+                d = (char**)malloc(sizeof(char*));
+                v = (int*)malloc(sizeof(int));
+            }
+            else
+            {
+                d = (char**)realloc(d,(n+1)*sizeof(char*));
+                v = (int*)realloc(v,(n+1)*sizeof(int));
+            }
+            d[n] = (char*)malloc((strlen(text)+1)*sizeof(char));
+            v[n] = 1;
+            strcpy(d[n],text);
+            n++;
+        }
+        else
+            v[i]++;
+        c = 0;
+    }
+    int i;
+    for(i=0; i<n; ++i)
+    {
+        printf("\n%s:%d",d[i],v[i]);
+    }
+    printf("\n\nStory Titles:\n");
+    for(i=0; i<st; ++i)
+        printf("(%d).%s\n",i+1,story_titles[i]);
 }
 
 void print_stats()
