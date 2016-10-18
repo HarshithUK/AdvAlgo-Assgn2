@@ -72,16 +72,10 @@ int main()
                         scanf("%d",&c);
                      }
                      while(c!=1 && c!=2 && c!=3);
-                     int* o;
+                     int o;
                      o = find_pattern(pat,tr,c);
-                     int i;
-                     printf("\n%d Occurrences of pattern found in indices: ",count);
-                     for(i=0; i<count; ++i)
-                     {
-                         printf("%d ",o[i]);
-                     }
-                     printf("\nPreprocessing Time: %lf",preprocessing_time);
-                     printf("\nSearch Time: %lf",search_time);
+                     printf("\nOccurences : %d", o);
+                     printf("\n");
                      break;
             case 3 : printf("\nWhich algorithm do you need?\n");
                      printf("\n1.Rabin-Karp");
@@ -93,15 +87,13 @@ int main()
                         scanf("%d",&c);
                      }
                      while(c!=1 && c!=2 && c!=3);
-                     FILE* fpw = fopen("temp.txt","r");
-                     build_cross_index(fpw,c);
+                     build_cross_index(fp,c);
                      break;
             case 4 : printf("\nEnter the size of the palindrome you want: ");
                      int s;
                      scanf("%d",&s);
-                     printf("\nEnter a text range: ");
-                     scanf("%d%d",&tr[0],&tr[1]);
-                     find_maximal_palindromes(s,tr);
+                     create_suff_arr();
+                     find_palindrome(s);
                      break;
             case 5 : print_stats();
                      break;
