@@ -40,14 +40,9 @@ int main () {
                         scanf("%d",&c);
                      }
                      while(c!=1 && c!=2 && c!=3);
-                     int* o;
+                     int o;
                      o = find_pattern(pat,tr,c);
-                     int i;
-                     printf("\nOccurences of pattern found in indices");
-                     for(i=0; i<count; ++i)
-                     {
-                         printf("%d ",o[i]);
-                     }
+                     printf("\nOccurences : %d", o);
                      printf("\n");
                      break;
             case 3 : printf("\nWhich algorithm do you need?\n");
@@ -60,25 +55,13 @@ int main () {
                         scanf("%d",&c);
                      }
                      while(c!=1 && c!=2 && c!=3);
-                     if(c==1)
-                     {
-                        build_cross_index(fp,&rabin_karp);
-                     }
-                     else if(c==2)
-                     {
-                        build_cross_index(fp,&knuth_morris_pratt);
-                     }
-                     else
-                     {
-                        build_cross_index(fp,&suffix_trees);
-                     }
+                     build_cross_index(fp,c);
                      break;
             case 4 : printf("\nEnter the size of the palindrome you want: ");
                      int s;
                      scanf("%d",&s);
-                     printf("\nEnter a text range: ");
-                     scanf("%d%d",&tr[0],&tr[1]);
-                     find_maximal_palindromes(s,tr);
+                     create_suff_arr();
+                     find_palindrome(s);
                      break;
             case 5 : print_stats();
                      break;

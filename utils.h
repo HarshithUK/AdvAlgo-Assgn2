@@ -31,7 +31,7 @@ double time_elapsed(struct timespec start, struct timespec end)
 	t += (end.tv_nsec - start.tv_nsec) * 0.000001;
 	return t;
 }
-int* rabin_karp(char* text, char* pat)
+int rabin_karp(char* text, char* pat)
 {
     struct timespec start, end;
     algo = 1;
@@ -60,7 +60,7 @@ int* rabin_karp(char* text, char* pat)
     {
         if(p==t[s])
         {
-            int i;
+            /*int i;
             for(i=0; i<m; ++i)
             {
                 if(pat[i]!=text[s+i])
@@ -69,7 +69,8 @@ int* rabin_karp(char* text, char* pat)
             if(i==m)
             {
                 occur[count++] = s;
-            }
+            }*/
+            count++;
         }
         if(s<n-m)
         {
@@ -83,7 +84,7 @@ int* rabin_karp(char* text, char* pat)
     }
     clock_gettime(CLOCK_REALTIME, &end);
     search_time = time_elapsed(start, end);
-    return occur;
+    return count;
 }
 
 int compar(const void *a, const void *b) {
@@ -124,7 +125,7 @@ void create_suff_arr() {
     suff_count = 0;
     struct timespec start, end;
     clock_gettime(CLOCK_REALTIME, &start);
-    fp = fopen ("file.txt", "r");
+    fp = fopen ("test.txt", "r");
     while (1) {
         ch = fgetc (fp);
         //printf("%c", ch);
@@ -218,7 +219,7 @@ int kmp_matcher(char* t, char* p) {
             }
         }
         clock_gettime(CLOCK_REALTIME, &end);
-        search_time = time_elapsed(start, end);        
+        search_time = time_elapsed(start, end);
         return occ;
 }
 
@@ -227,10 +228,10 @@ int find_palindrome (int len) {
     int k = 0;
     int i = 0;//compares from begenning
     int j = 0;//compares form the end
-
+    printf("palindrome funciton called\n");
     char flag = 0;
 
-    for ( k = 0; k < count; k++) {
+    for ( k = 0; k < suff_count; k++) {
         i = k;
         j = k + len - 1;
         flag = 1;
@@ -304,12 +305,13 @@ int find_length_of_text(FILE* fp)
     text_size = len;
     return len;
 }
-int* find_pattern(char* p, int t[], int option)
+int find_pattern(char* p, int t[], int option)
 {
     FILE* fpw = fopen("temp.txt","r");
     char text[t[1]-t[0]+1];
     int i,c = 0,a = 0;
     int ch = fgetc(fpw);
+    int suff_arr_created = 0;
     while(ch!=-1)
     {
         if(c>=t[0] && c<t[1])
@@ -323,17 +325,18 @@ int* find_pattern(char* p, int t[], int option)
     else if(option==2)
         o = kmp_matcher(text,p);
     else {
-        create_suff_arr();
+        if(suff_arr_created == 0) {
+            create_suff_arr();
+            suff_arr_created = 1;
+        }
         o = linear_search(p);
     }
     return o;
 }
-void build_cross_index(FILE* fp, func_algo f)
+void build_cross_index(FILE* fp, int option)
 {
 }
-char* find_maximal_palindromes(int s, int text[])
-{
-}
+
 void print_stats()
 {
     printf("\nSTATISTICS:\n\n");
